@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    {% load i18n %}
+    <title>Internationalization Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>{{ title_text }}</h1>
+        <h2>{% trans "Hello World" %}</h2>
+        <div>
+            Change Languages 
+            {% get_available_languages as LANGUAGES %}
+            {% get_language_info_list for LANGUAGES as languages %}
+            {% for language in languages %}
+            <a href="{% url 'gallery_i18n:change-language' language.code %}">{{ language.name_local }}</a> . 
+            {% endfor %}
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

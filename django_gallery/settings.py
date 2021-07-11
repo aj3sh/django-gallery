@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 import environ
 from pathlib import Path
+from django.utils.translation import ugettext_lazy as _
 
 # loading environment
 env = environ.Env()
@@ -42,11 +43,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # custom apps
+    'gallery_i18n',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware', # Middle ware for localization
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -59,7 +64,9 @@ ROOT_URLCONF = 'django_gallery.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / 'templates',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -134,3 +141,15 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Localizations settings
+LANGUAGES = (
+    ('en-us', _('English')),
+    ('es', _('Spanish')),
+    ('ne', _('Nepali')),
+)
+
+LOCALE_PATHS = (
+    BASE_DIR / 'locale',
+)
