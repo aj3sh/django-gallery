@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <title>Django Gallery</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        html, body{
+            height: 100%;
+        }
+
+        body{
+            background: url('{% static 'images/django-bg.jpg' %}');
+            background-position: center;
+            background-size: cover;
+        }
+
+        body::before{
+            content: '';
+            position: absolute;
+            z-index: -1;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .card-link{
+            height: 100%;
+            text-align: center;
+        }
+
+        .card{
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="jumbotron text-center text-white mb-0" style="background-color: transparent;">
+        <h1>Django Gallery</h1>
+        <p>Django Gallery is a web based project written in Python/Django framework. It contains a collection of Django codes that helps build a project.</p> 
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+                <a href="{% url 'gallery_i18n:example' %}" class="card-link d-block text-decoration-none">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>Internationalization</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
