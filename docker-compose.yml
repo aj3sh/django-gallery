@@ -1,0 +1,33 @@
+version: "3.3"
+  
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=django_gallery
+      - POSTGRES_USER=django_gallery_user
+      - POSTGRES_PASSWORD=django_gallery_password
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+  web:
+    build: .
+    restart: on-failure
+    environment:
+      - DEBUG=True
+      - DATABASE_URL=psql://django_gallery_user:django_gallery_password@db/django_gallery
+    command: 
+      - /bin/bash
+      - -c
+      - |
+        python manage.py migrate
+        python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+volumes:
+  pgdata:

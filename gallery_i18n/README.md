@@ -8,7 +8,7 @@ In `settings.py` add `'django.middleware.locale.LocaleMiddleware'` below the `Se
 MIDDLEWARE = [
     ...
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware', # Middle ware for localization
+    'django.middleware.locale.LocaleMiddleware', # Middleware for localization
     ...
 ]
 ```
