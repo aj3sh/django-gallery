@@ -5,25 +5,28 @@ on:
     branches: [main]
   pull_request:
 
+env:
+  PYTHNON_VERSION: 3.12
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 4
-      matrix:
-        python-version: [3.8]
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Run commitlint
+        uses: opensource-nepal/commitlint@v1
+
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ env.PYTHNON_VERSION }}
+          cache: 'pip'
 
       - name: Install Dependencies
         run: |
-          python -m pip install --upgrade pip setuptools
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Run Tests
