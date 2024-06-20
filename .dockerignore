@@ -1,0 +1,9 @@
+.github
+__pycache__/
+*.pyc
+.env
+env/
+venv/
+db.sqlite3
+media/
+.vscode
