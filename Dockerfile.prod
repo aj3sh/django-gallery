@@ -5,6 +5,7 @@ WORKDIR /code
 COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install gunicorn==22.0.0
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
@@ -22,5 +23,5 @@ EXPOSE $PORT
 
 ENTRYPOINT ["sh", "-c", "\
     python manage.py migrate --no-input && \
-    python manage.py runserver 0.0.0.0:$PORT \
+    gunicorn django_gallery.wsgi:application --bind 0.0.0.0:$PORT --workers 3 \
 "]
