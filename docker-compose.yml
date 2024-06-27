@@ -1,0 +1,36 @@
+services:
+  postgres_db:
+    container_name: dg-db
+    image: postgres:16.3
+    restart: always
+    env_file:
+      - .env.compose
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+  web:
+    container_name: dg-web
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: on-failure
+    env_file:
+      - .env.compose
+    environment:
+      - DEBUG=True
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+    name: dg_pg_data

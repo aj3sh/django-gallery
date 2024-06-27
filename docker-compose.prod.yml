@@ -1,0 +1,47 @@
+services:
+  postgres_db:
+    container_name: dg-db
+    image: postgres:16.3
+    restart: always
+    env_file:
+      - .env.compose
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+  web:
+    container_name: dg-web
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    restart: always
+    env_file:
+      - .env.compose
+    environment:
+      - DEBUG=False
+    volumes:
+      - ./media/:/code/media/
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+
+  nginx:
+    container_name: dg-nginx
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    restart: always
+    volumes:
+      - ./media/:/media/
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+
+volumes:
+  pgdata:
+    name: dg_pg_data
