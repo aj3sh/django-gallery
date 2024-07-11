@@ -1,47 +1,47 @@
-version: "3.3"
-  
 services:
-  nginx:
-    image: "nginx"
+  postgres_db:
+    container_name: dg-db
+    image: postgres:16.3
     restart: always
-    volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/server.conf
-      - ./static_cdn/:/static_cdn/
-      - ./media/:/media/
-    ports:
-      - "8888:8777"
-    depends_on:
-      - web
-  db:
-    image: postgres
-    restart: always
+    env_file:
+      - .env.compose
     volumes:
       - pgdata:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_DB=django_gallery
-      - POSTGRES_USER=django_gallery_user
-      - POSTGRES_PASSWORD=django_gallery_password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
   web:
-    build: .
-    restart: on-failure
+    container_name: dg-web
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    restart: always
+    env_file:
+      - .env.compose
     environment:
       - DEBUG=False
-      - DATABASE_URL=psql://django_gallery_user:django_gallery_password@db/django_gallery
-    command: 
-      - /bin/bash
-      - -c
-      - |
-        python manage.py migrate
-        python manage.py collectstatic --no-input
-        gunicorn django_gallery.wsgi:application --bind 0.0.0.0:8000  --workers 3 --reload
     volumes:
-      # - .:/code
-      # - ./static_cdn/:/code/static_cdn/
       - ./media/:/code/media/
-    # ports:
-    #   - "8000:8000" # Ports are disabled because it is handled by nginx
     depends_on:
-      - db
-  
+      postgres_db:
+        condition: service_healthy
+
+  nginx:
+    container_name: dg-nginx
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    restart: always
+    volumes:
+      - ./media/:/media/
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+
 volumes:
   pgdata:
+    name: dg_pg_data

@@ -1,6 +1,7 @@
 __pycache__/
 *.pyc
 .env
+.env.compose
 env/
 venv/
 db.sqlite3

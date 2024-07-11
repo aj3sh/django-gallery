@@ -1,33 +1,36 @@
-version: "3.3"
-  
 services:
-  db:
-    image: postgres
+  postgres_db:
+    container_name: dg-db
+    image: postgres:16.3
     restart: always
-    environment:
-      - POSTGRES_DB=django_gallery
-      - POSTGRES_USER=django_gallery_user
-      - POSTGRES_PASSWORD=django_gallery_password
+    env_file:
+      - .env.compose
     volumes:
       - pgdata:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
   web:
-    build: .
+    container_name: dg-web
+    build:
+      context: .
+      dockerfile: Dockerfile
     restart: on-failure
+    env_file:
+      - .env.compose
     environment:
       - DEBUG=True
-      - DATABASE_URL=psql://django_gallery_user:django_gallery_password@db/django_gallery
-    command: 
-      - /bin/bash
-      - -c
-      - |
-        python manage.py migrate
-        python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/code
     ports:
       - "8000:8000"
     depends_on:
-      - db
+      postgres_db:
+        condition: service_healthy
 
 volumes:
   pgdata:
+    name: dg_pg_data
