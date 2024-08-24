@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Run commitlint
-        uses: opensource-nepal/commitlint@v1
+        uses: opensource-nepal/commitlint@main
 
       - name: Set up Python
         uses: actions/setup-python@v5
