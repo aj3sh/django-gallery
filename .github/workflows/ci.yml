@@ -6,7 +6,7 @@ on:
   pull_request:
 
 env:
-  PYTHNON_VERSION: 3.12
+  PYTHON_VERSION: 3.12
 
 jobs:
   build:
@@ -19,9 +19,9 @@ jobs:
         uses: opensource-nepal/commitlint@main
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v1
         with:
-          python-version: ${{ env.PYTHNON_VERSION }}
+          python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
 
       - name: Install Dependencies
